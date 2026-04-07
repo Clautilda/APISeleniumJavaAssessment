@@ -8,6 +8,7 @@ import org.testng.annotations.Test;
 import payloadBuilder.PayloadBuilder;
 import requestBuilder.APIRequestBuilder;
 import utilities.DatabaseConnection;
+import utilities.RandomPassword;
 
 import java.sql.SQLException;
 
@@ -30,6 +31,7 @@ public class APIAssessmentTest {
     static String registeredEmail;
     static String firstName;
     static String lastName;
+    static String password;
 
 
     // Setup method to establish database connection before running the tests
@@ -60,12 +62,15 @@ public class APIAssessmentTest {
     @Test(dependsOnMethods = "adminLoginTest")
     public void registerUser(){
 
+        // Generate random user details using the Faker library to create a unique email address and random first and last names for the new user
         registeredEmail = Faker.instance().internet().emailAddress();
         firstName = Faker.instance().name().firstName();
         lastName = Faker.instance().name().lastName();
+        password = RandomPassword.password;
+
         String apiPath = "/APIDEV/register";
 
-        String payload = PayloadBuilder.registerUserPayload(firstName,lastName, registeredEmail, "Winter123!", "Winter123!", "1deae17a-c67a-4bb0-bdeb-df0fc9e2e526");
+        String payload = PayloadBuilder.registerUserPayload(firstName, lastName, registeredEmail, password, password, "1deae17a-c67a-4bb0-bdeb-df0fc9e2e526");
 
         response = APIRequestBuilder.post(baseURL + apiPath, payload);
 
@@ -73,7 +78,9 @@ public class APIAssessmentTest {
 
         registeredUserId = response.jsonPath().getString("data.id");
         registeredEmail = response.jsonPath().getString("data.email");
+
     }
+
 
     // Test method to approve the registered user, which depends on the successful registration of the user
     @Test(dependsOnMethods = "registerUser")
@@ -103,7 +110,7 @@ public class APIAssessmentTest {
     public void userLogin(){
 
         String apiPath = "/APIDEV/login";
-        String payload = PayloadBuilder.loginUserPayload(registeredEmail, "Winter123!");
+        String payload = PayloadBuilder.loginUserPayload(registeredEmail, password);
 
         response = APIRequestBuilder.post(baseURL + apiPath, payload);
 
