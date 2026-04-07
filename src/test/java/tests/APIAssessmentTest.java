@@ -28,6 +28,8 @@ public class APIAssessmentTest {
     static String authToken;
     static String registeredUserId;
     static String registeredEmail;
+    static String firstName;
+    static String lastName;
 
 
     // Setup method to establish database connection before running the tests
@@ -59,9 +61,11 @@ public class APIAssessmentTest {
     public void registerUser(){
 
         registeredEmail = Faker.instance().internet().emailAddress();
+        firstName = Faker.instance().name().firstName();
+        lastName = Faker.instance().name().lastName();
         String apiPath = "/APIDEV/register";
 
-        String payload = PayloadBuilder.registerUserPayload("Nontobeko", "Assessment", registeredEmail, "Winter123!", "Winter123!", "1deae17a-c67a-4bb0-bdeb-df0fc9e2e526");
+        String payload = PayloadBuilder.registerUserPayload(firstName,lastName, registeredEmail, "Winter123!", "Winter123!", "1deae17a-c67a-4bb0-bdeb-df0fc9e2e526");
 
         response = APIRequestBuilder.post(baseURL + apiPath, payload);
 
